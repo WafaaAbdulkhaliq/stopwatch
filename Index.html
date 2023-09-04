@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html >
+<head>
+    <title> Stopwatch </title>
+    <style>
+      .timebut{
+
+          width:80px;
+          height:30px;
+          border:3px solid;
+          border-radius:12px;
+          background-color:#333333;
+          color:white;
+          cursor:pointer;
+          font-family:Consolas,monospace;
+      } 
+
+      #timeDisplay{
+
+          font-size:75px;
+          color:#40c437;
+          font-family:Consolas,monospace;
+
+      }
+
+      #timecontainer{
+
+          text-align:center;
+          border:3px;
+          border-radius:25px;
+          background-color:#222222;
+      }
+    </style>
+</head>
+<body>
+   <div id="timecontainer">
+       <div id="timeDisplay" >00:00:00</div>
+       <button id="startbtn" class="timebut">Start</button>
+       <button id="stopbtn" class="timebut">stop</button>
+       <button id="resetbtn" class="timebut">reset</button>
+
+   </div>
+
+
+    <script>
+        const timeDisplay = document.querySelector("#timeDisplay");
+        const startbtn = document.querySelector("#startbtn");
+        const stopbtn = document.querySelector("#stopbtn");
+        const resetbtn = document.querySelector("#resetbtn");
+        let starttime = 0;
+        let elapsedtime = 0;
+        let currenttime = 0;
+        let paused = true;
+        let intervalid;
+        let hrs = 0;
+        let mins = 0;
+        let secs = 0;
+
+        startbtn.addEventListener("click", () => {
+            
+            if(paused)
+            {
+                
+                paused = false;
+                starttime = Date.now() - elapsedtime;
+                intervalid = setInterval(updatetime, 75);
+            }
+
+        });
+        stopbtn.addEventListener("click", () => {
+           
+            if(!paused)
+            {
+                paused=true;
+                elapsedtime=Date.now()-starttime;
+                clearInterval(intervalid);
+            }
+            
+        });
+        resetbtn.addEventListener("click", () => {
+            paused=true;
+            clearInterval(intervalid);
+            starttime = 0;
+            elapsedtime = 0;
+            currenttime = 0;
+            hrs = 0;
+            mins = 0;
+            secs = 0;
+
+            timeDisplay.textContent="00:00:00";
+        });
+
+        function updatetime()
+        {
+            elapsedtime = Date.now() - starttime;
+
+            secs = Math.floor((elapsedtime / 1000) % 60);
+            mins = Math.floor((elapsedtime / (1000*60)) % 60);
+            hrs = Math.floor((elapsedtime / (1000 * 60 * 60)) % 60);
+
+
+            secs=pad(secs);
+            mins=pad(mins);
+            hrs=pad(hrs);
+
+            timeDisplay.textContent=`${hrs}:${mins}:${secs}`;
+
+            function pad(unit)
+            {
+                return (("0")+unit).lenght >2?unit:"0"+unit;
+            }
+        }
+    </script>
+</body>
+</html>
